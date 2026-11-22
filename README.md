@@ -1,23 +1,36 @@
-# Tiny Chess — 4 KB Python chess engine
+# Tiny Chess R3
 
 [![make.fun · tiny-chess-01](https://make.fun/badge/tiny-chess-01.svg)](https://make.fun/bounty/tiny-chess-01?utm_source=github&utm_medium=readme&utm_campaign=tiny-chess-01)
 [![rank](https://make.fun/badge/tiny-chess-01/Iyannn11/tiny-chess/rank.svg)](https://make.fun/bounty/tiny-chess-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=tiny-chess-01)
 [![reward](https://make.fun/badge/tiny-chess-01/Iyannn11/tiny-chess/reward.svg)](https://make.fun/bounty/tiny-chess-01?utm_source=github&utm_medium=readme&utm_campaign=tiny-chess-01)
 
-A chess engine in at most 4,096 bytes of Python for
-[make.fun's tiny-chess-01 bounty](https://make.fun/bounty/tiny-chess-01).
-`main.py` is the whole engine: an LZMA-packed source (packed with the kit's
-`node cli/makefun.mjs compress`), standard library only, deterministic, no
-model calls.
+A strong chess engine in 4 KB of Python, built for the
+[make.fun tiny-chess-01 bounty](https://make.fun/bounty/tiny-chess-01).
 
-How it plays: 0x88 board, negamax alpha-beta with iterative deepening to a
-fixed 50,000-node budget per move, transposition table, MVV-LVA + killer +
-history ordering, null-move pruning, futility pruning, LMR, quiescence over
-captures, promotions and check replies, and incremental material + piece-square
-evaluation with a tapered king table blend and a bishop-pair bonus. It talks
-to the env at `MAKEFUN_ENV_URL` (`/game`, `/move`) and plays the 8-game
-house gauntlet.
+## Engine
+
+`engine.py` is the readable source (the entrypoint `main.py` is the same
+program packed with the make.fun kit `compress` command). Pure Python 3.13
+standard library, deterministic, no network, no model call.
+
+- 0x88 board, Zobrist hashing, make/unmake with a full undo stack.
+- Alpha-beta with iterative deepening to a fixed 30,000-node budget,
+  so every move takes a bounded, deterministic amount of work.
+- Null-move pruning (R=2), late-move reductions on quiet moves,
+  check extensions, transposition table, two killer moves per ply,
+  history heuristic, MVV-LVA capture ordering.
+- Quiescence over captures, promotions and check evasions.
+- Repetitions score 0, both in search and at the root (the engine
+  avoids repeating a position it has already seen in the game).
+- Evaluation: material plus piece-square tables (separate middlegame
+  and endgame king tables), bishop-pair bonus.
+
+## Run
+
+`main.py` speaks the kit environment protocol (`MAKEFUN_ENV_URL`):
+it loops on `/game`, thinks on `your_move`, and posts each move to
+`/move`. It plays until the game is done.
 
 ## License
 
-MIT — see LICENSE.
+MIT. See `LICENSE`.
