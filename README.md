@@ -1,36 +1,19 @@
-# Tiny Chess R3
+# Tiny Chess R7
 
 [![make.fun · tiny-chess-01](https://make.fun/badge/tiny-chess-01.svg)](https://make.fun/bounty/tiny-chess-01?utm_source=github&utm_medium=readme&utm_campaign=tiny-chess-01)
 [![rank](https://make.fun/badge/tiny-chess-01/Iyannn11/tiny-chess/rank.svg)](https://make.fun/bounty/tiny-chess-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=tiny-chess-01)
 [![reward](https://make.fun/badge/tiny-chess-01/Iyannn11/tiny-chess/reward.svg)](https://make.fun/bounty/tiny-chess-01?utm_source=github&utm_medium=readme&utm_campaign=tiny-chess-01)
 
-A strong chess engine in 4 KB of Python, built for the
-[make.fun tiny-chess-01 bounty](https://make.fun/bounty/tiny-chess-01).
+Tiny Chess R7 is a fresh-write, ultra-compact chess engine for the make.fun Tiny Chess bounty: the whole program packs into 3,983 bytes (cap 4,096 B). It uses a 0x88 board, Zobrist transposition table, negamax + iterative deepening, aspiration windows ±50, null-move pruning R=2, LMR + PVS, reverse futility, check extensions, 2 killers per ply, MVV-LVA ordering, a compact full SEE computed on the live board (no board copy), quiescence search with check evasions, material + piece-square-table eval, and a fixed node budget of 300,000 per move.
 
-## Engine
+Practice mean Elo 1,424 (trials 1,364 / 1,545 / 1,364), beating the counted R3's 1,327.
 
-`engine.py` is the readable source (the entrypoint `main.py` is the same
-program packed with the make.fun kit `compress` command). Pure Python 3.13
-standard library, deterministic, no network, no model call.
+## Practice results
 
-- 0x88 board, Zobrist hashing, make/unmake with a full undo stack.
-- Alpha-beta with iterative deepening to a fixed 30,000-node budget,
-  so every move takes a bounded, deterministic amount of work.
-- Null-move pruning (R=2), late-move reductions on quiet moves,
-  check extensions, transposition table, two killer moves per ply,
-  history heuristic, MVV-LVA capture ordering.
-- Quiescence over captures, promotions and check evasions.
-- Repetitions score 0, both in search and at the root (the engine
-  avoids repeating a position it has already seen in the game).
-- Evaluation: material plus piece-square tables (separate middlegame
-  and endgame king tables), bishop-pair bonus.
+Kit gauntlet, 6 games per trial, run sequentially:
 
-## Run
+- Trial 0: Elo 1,364
+- Trial 1: Elo 1,545
+- Trial 2: Elo 1,364
 
-`main.py` speaks the kit environment protocol (`MAKEFUN_ENV_URL`):
-it loops on `/game`, thinks on `your_move`, and posts each move to
-`/move`. It plays until the game is done.
-
-## License
-
-MIT. See `LICENSE`.
+Mean: 1,424 — above the counted R3's practice mean of 1,327.
